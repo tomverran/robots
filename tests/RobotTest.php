@@ -14,10 +14,10 @@ class RobotTest extends PHPUnit_Framework_TestCase
      * @param string $file The filename
      * @return RobotsTxt
      */
-    private static function getRobotsTxt( $file )
+    private static function getRobotsTxt($file)
     {
         $d = DIRECTORY_SEPARATOR;
-        return new RobotsTxt(file_get_contents(dirname(__FILE__).$d.'files'.$d.$file.'.txt'));
+        return new RobotsTxt(file_get_contents(dirname(__FILE__) . $d . 'files' . $d . $file . '.txt'));
     }
 
     /**

@@ -27,7 +27,7 @@ class RobotsTxt
      * @param $robotFile
      * @throws \LogicException
      */
-    private function parseFile( $robotFile )
+    private function parseFile($robotFile)
     {
         $currentUserAgent = null;
         foreach (explode( "\n", strtolower($robotFile)) as $line) {
@@ -59,11 +59,11 @@ class RobotsTxt
 
     /**
      * Is the given user agent allowed access to the given resource
-     * @param $userAgent
-     * @param $path
+     * @param string $userAgent The user agent to check
+     * @param string $path The path of the URL
      * @return bool|null
      */
-    public function isAllowed( $userAgent, $path )
+    public function isAllowed($userAgent, $path)
     {
         $urlParts = array_filter(explode('/', $path));
         $ret = $this->tree->allowed($userAgent, $urlParts);
@@ -71,7 +71,7 @@ class RobotsTxt
         if ($ret === null) {
             $ret = $this->tree->allowed('*', $urlParts);
         }
-        if ( $ret === null) {
+        if ($ret === null) {
             $ret = true;
         }
         return $ret;
