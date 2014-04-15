@@ -11,12 +11,13 @@ class RobotTest extends PHPUnit_Framework_TestCase
     /**
      * Get a RobotsTxt class loaded up with google's robots.txt
      * which is like, the most complex one I've seen.
+     * @param string $file The filename
      * @return RobotsTxt
      */
-    private static function getRobotsTxt()
+    private static function getRobotsTxt( $file )
     {
         $d = DIRECTORY_SEPARATOR;
-        return new RobotsTxt(file_get_contents(dirname(__FILE__).$d.'files'.$d.'google.com.txt'));
+        return new RobotsTxt(file_get_contents(dirname(__FILE__).$d.'files'.$d.$file.'.txt'));
     }
 
     /**
@@ -24,7 +25,7 @@ class RobotTest extends PHPUnit_Framework_TestCase
      */
     public function testBasicDisallow()
     {
-        $this->assertFalse(self::getRobotsTxt()->isAllowed('robot', '/print'), 'robot cannot access /print');
+        $this->assertFalse(self::getRobotsTxt('google')->isAllowed('robot', '/print'), 'robot cannot access /print');
     }
 
     /**
@@ -32,7 +33,7 @@ class RobotTest extends PHPUnit_Framework_TestCase
      */
     public function testBasicAllow()
     {
-        $this->assertTrue(self::getRobotsTxt()->isAllowed('robot', '/m/finance'), 'robot can access /m/finance');
+        $this->assertTrue(self::getRobotsTxt('google')->isAllowed('robot', '/m/finance'), 'robot can access /m/finance');
     }
 
     /**
@@ -41,7 +42,7 @@ class RobotTest extends PHPUnit_Framework_TestCase
      */
     public function testNonLeafDisallow()
     {
-        $this->assertFalse(self::getRobotsTxt()->isAllowed('robot', '/safebrowsing'), 'robot cannot access /safebrowsing');
+        $this->assertFalse(self::getRobotsTxt('google')->isAllowed('robot', '/safebrowsing'), 'robot cannot access /safebrowsing');
     }
 
     /**
@@ -49,7 +50,7 @@ class RobotTest extends PHPUnit_Framework_TestCase
      */
     public function testNonLeafAllow()
     {
-        $this->assertTrue(self::getRobotsTxt()->isAllowed('robot', '/safebrowsing/diagnostic'), 'robot can access /safebrowsing/diagnostic');
+        $this->assertTrue(self::getRobotsTxt('google')->isAllowed('robot', '/safebrowsing/diagnostic'), 'robot can access /safebrowsing/diagnostic');
     }
 
     /**
@@ -59,6 +60,15 @@ class RobotTest extends PHPUnit_Framework_TestCase
      */
     public function testMyDodgyWildcardSupport()
     {
-        $this->assertFalse(self::getRobotsTxt()->isAllowed('robot', '/compare/something/applyToThis'), 'wildcards kinda work');
+        $this->assertFalse(self::getRobotsTxt('google')->isAllowed('robot', '/compare/something/applyToThis'), 'wildcards kinda work');
+    }
+
+    /**
+     * Quite a lot of sites include a really itty bitty robots.txt
+     * which just has a wildcard user agent and a blank disallow to indicate they're pretty laid back
+     */
+    public function testBlankDisallowsMeanAllowed()
+    {
+        $this->assertTrue(self::getRobotsTxt('minimal')->isAllowed('robot', '/'), 'blank disallows = allow');
     }
 } 

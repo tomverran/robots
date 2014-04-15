@@ -31,7 +31,15 @@ class RobotsTxt
     {
         $currentUserAgent = null;
         foreach (explode( "\n", strtolower($robotFile)) as $line) {
-            list($directive, $argument) = array_map('trim', explode(':', $line));
+
+            $parts = array_filter(array_map('trim', explode(':', $line)));
+
+            //if we don't have a full rule or this is a comment..
+            if (count($parts) < 2 || strpos($line, '#') === 0) {
+                continue;
+            }
+
+            list($directive, $argument) = $parts;
 
             //handle setting our user agent
             if ($directive == 'user-agent') {
@@ -41,13 +49,11 @@ class RobotsTxt
                 throw new \LogicException('No user agent specified');
             }
 
-            if ($directive == 'sitemap') {
-                continue; //not yet supported
+            //the last case is allow / deny. Add to the trees
+            if ($directive == 'disallow' || $directive == 'allow') {
+                $urlParts = array_filter(explode('/', $argument));
+                $this->tree->getNode($urlParts)->addRule($currentUserAgent, $directive != 'disallow');
             }
-
-            //the last case is allow / deny. Add to the tree
-            $urlParts = array_filter(explode('/', $argument));
-            $this->tree->getNode($urlParts)->addRule($currentUserAgent, $directive != 'disallow');
         }
     }
 
