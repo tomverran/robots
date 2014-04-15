@@ -6,7 +6,7 @@ a given resource with a given user agent. Internally it organises the file into 
 
 Wildcards are supported in a basic way:
 
-so `Disallow: /hello/*/world` will disallow `/hello/whatever/world` but won't disallow `/hello/what/who/when/where/world`
+`Disallow: /hello/*/world` will disallow `/hello/whatever/world` but won't disallow `/hello/what/who/world`
 
 If you find any bugs with this library please don't hesitate to let me know, either create an issue on GitHub or submit a pull request.
 
