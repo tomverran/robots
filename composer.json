@@ -1,8 +1,8 @@
 {
     "name": "tomverran/Robot",
     "type": "library",
-    "description": "simple robots.txt parser, for when you just want a yes/no answer",
-    "keywords": ["Wheel reinvention", "tedious"],
+    "description": "Given a robots.txt file, user agent and URL path will tell you whether you're allowed to access a page",
+    "keywords": ["crawler", "robots.txt"],
     "homepage": "https://carefulcoder.co.uk",
     "license": "MIT",
     "authors": [
@@ -19,8 +19,8 @@
         "phpunit/phpunit": "3.7.*"
     },
     "autoload": {
-        "psr-0": {
-            "tomverran\\Robot": "src"
+        "psr-4": {
+            "tomverran\\Robot\\": "src/Robot/"
         }
     }
 }

@@ -4,11 +4,21 @@ Robots.txt parser
 Given a robots.txt file this library will give you a straight forward yes/no as to whether you're allowed to access
 a given resource with a given user agent. Internally it organises the file into a tree.
 
-Wildcards are supported in a basic way, but only on a per-folder basis
+Wildcards are supported in a basic way:
 
-so /hello/*/world will match /hello/whatever/world but won't match /hello/what/who/when/where/world
+so `Disallow: /hello/*/world` will disallow `/hello/whatever/world` but won't disallow `/hello/what/who/when/where/world`
 
-but I can't imagine that being a huge issue with most robots.txt files.
+If you find any bugs with this library please don't hesitate to let me know, either create an issue on GitHub or submit a pull request.
+
+Example Usage
+-------------
+
+I personally use this library alongside an http client library such that all requests go through a class that checks the site's robots.txt first. Basic usage is as follows:
+
+    <?php
+    use \tomverran\Robots\RobotsTxt;
+    $robotsTxt = new RobotsTxt(file_get_contents('http://your-site-here/robots.txt'));
+    $canViewPage = $robotsTxt->isAllowed('my-user-agent', '/some/path/');
 
 License
 -------
