@@ -1,4 +1,4 @@
-Robots.txt parser
+Robots.txt checker
 ==================
 
 Given a robots.txt file this library will give you a straight forward yes/no as to whether you're allowed to access
