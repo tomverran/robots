@@ -71,4 +71,14 @@ class RobotTest extends PHPUnit_Framework_TestCase
     {
         $this->assertTrue(self::getRobotsTxt('minimal')->isAllowed('robot', '/'), 'blank disallows = allow');
     }
+
+    /**
+     * Quite a lot of sites include a really itty bitty robots.txt
+     * which just has a wildcard user agent and a blank disallow to indicate they're pretty laid back
+     */
+    public function testInlineComments()
+    {
+        $this->assertFalse(self::getRobotsTxt('comment')->isAllowed('robot', '/comment'), 'lines with inline comments');
+        $this->assertFalse(self::getRobotsTxt('comment')->isAllowed('robot', '/test'), 'lines following those with inline comments');
+    }
 } 
