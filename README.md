@@ -1,6 +1,8 @@
 Robots.txt checker
 ==================
 
+![Travis](https://travis-ci.org/tomverran/robots.svg?branch=master)
+
 Given a robots.txt file this library will give you a straight forward yes/no as to whether you're allowed to access
 a given resource with a given user agent. Internally it organises the file into a tree.
 
