@@ -73,8 +73,7 @@ class RobotTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Quite a lot of sites include a really itty bitty robots.txt
-     * which just has a wildcard user agent and a blank disallow to indicate they're pretty laid back
+     * Some robots.txt files include inline comments.
      */
     public function testInlineComments()
     {
