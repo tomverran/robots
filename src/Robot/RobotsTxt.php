@@ -32,6 +32,8 @@ class RobotsTxt
         $currentUserAgent = null;
         foreach (explode( "\n", strtolower($robotFile)) as $line) {
 
+            $line = preg_replace('![ \t]*#.*[ \t]*[\r\n]!', '', $line);
+            
             $parts = array_filter(array_map('trim', explode(':', $line)));
 
             //if we don't have a full rule or this is a comment..
