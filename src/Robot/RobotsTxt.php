@@ -30,14 +30,15 @@ class RobotsTxt
     private function parseFile($robotFile)
     {
         $currentUserAgent = null;
-        foreach (explode( "\n", strtolower($robotFile)) as $line) {
+        
+        $withoutComments = preg_replace( '/#.*/', '', strtolower( $robotFile ) );
 
-            $line = preg_replace('![ \t]*#.*[ \t]*[\r\n]!', '', $line);
+        foreach (explode( "\n", $withoutComments ) as $line) {
             
             $parts = array_filter(array_map('trim', explode(':', $line)));
 
             //if we don't have a full rule or this is a comment..
-            if (count($parts) < 2 || strpos($line, '#') === 0) {
+            if (count($parts) < 2) {
                 continue;
             }
 
