@@ -16,12 +16,12 @@ Example Usage
 -------------
 
 I personally use this library alongside an http client library such that all requests go through a class that checks the site's robots.txt first. Basic usage is as follows:
-
-    <?php
-    use \tomverran\Robots\RobotsTxt;
-    $robotsTxt = new RobotsTxt(file_get_contents('http://your-site-here/robots.txt'));
-    $canViewPage = $robotsTxt->isAllowed('my-user-agent', '/some/path/');
-
+```php
+<?php
+use \tomverran\Robot\RobotsTxt;
+$robotsTxt = new RobotsTxt(file_get_contents('http://your-site-here/robots.txt'));
+$canViewPage = $robotsTxt->isAllowed('my-user-agent', '/some/path/');
+```
 License
 -------
 
