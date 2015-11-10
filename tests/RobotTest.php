@@ -105,4 +105,9 @@ class RobotTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(self::getRobotsTxt('multiUserAgent')->isAllowed('robot2', '/some/other'));
         $this->assertTrue(self::getRobotsTxt('multiUserAgent')->isAllowed('Googlebot', '/some/other'));
     }
+
+    public function testFileWithInvalidLines()
+    {
+        $this->assertTrue(self::getRobotsTxt('corrupted')->isAllowed('Googlebot', '/some/other'));
+    }
 } 
