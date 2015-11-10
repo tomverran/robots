@@ -42,9 +42,11 @@ class Leaf
      * @param string $userAgent The user agent to check
      * @param bool $allowed Are they allowed
      */
-    public function addRule($userAgent, $allowed)
+    public function addRule($userAgents, $allowed)
     {
-        $this->rules[$userAgent] = $allowed;
+        foreach ($userAgents as $userAgent) {
+            $this->rules[$userAgent] = $allowed;
+        }
     }
 
     /**
@@ -55,10 +57,13 @@ class Leaf
      */
     public function allowed($userAgent, $urlParts)
     {
-        $ourRule = isset($this->rules[$userAgent]) ? $this->rules[$userAgent] : null;
-        $currentUrlPart = array_shift($urlParts);
+        $wildcardRule = isset($this->rules['*']) ? $this->rules['*'] : null;
+        $ourRuleForUserAgent = isset($this->rules[$userAgent]) ? $this->rules[$userAgent] : null;
+        $ourRule = $ourRuleForUserAgent === null ? $wildcardRule : $ourRuleForUserAgent;
 
+        $currentUrlPart = array_shift($urlParts);
         $theirRule = null;
+
         foreach ($this->children as $part => $leaf) {
 
             //convert our leaf into a regular expression, replacing * with regex non greedy wildcards

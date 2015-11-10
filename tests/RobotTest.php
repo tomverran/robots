@@ -80,4 +80,29 @@ class RobotTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(self::getRobotsTxt('comment')->isAllowed('robot', '/comment'), 'lines with inline comments');
         $this->assertFalse(self::getRobotsTxt('comment')->isAllowed('robot', '/test'), 'lines following those with inline comments');
     }
+
+    /**
+     * This entire library should be case insensitive
+     */
+    public function testCapitalisedUserAgent()
+    {
+        $this->assertFalse(self::getRobotsTxt('multiUserAgent')->isAllowed('Googlebot', '/private/page.html'), 'Capitalised UA');
+    }
+
+    /**
+     *
+     */
+    public function testMultipleConsecutiveUserAgents()
+    {
+        foreach(['UA', 'Googlebot', '*'] as $agent) {
+            $this->assertFalse(self::getRobotsTxt('multiUserAgent')->isAllowed($agent, '/private/page.html'), $agent);
+            $this->assertTrue(self::getRobotsTxt('multiUserAgent')->isAllowed($agent, '/'), $agent);
+        }
+    }
+
+    public function testMultipleNonConsecutiveUserAgents()
+    {
+        $this->assertFalse(self::getRobotsTxt('multiUserAgent')->isAllowed('robot2', '/some/other'));
+        $this->assertTrue(self::getRobotsTxt('multiUserAgent')->isAllowed('Googlebot', '/some/other'));
+    }
 } 
