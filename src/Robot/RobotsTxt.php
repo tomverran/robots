@@ -31,11 +31,11 @@ class RobotsTxt
     {
         while($robotFile->hasLines()) {
             $currentUserAgents = [];
-            while ($robotFile->firstDirectiveIs('user-agent')) {
+            while ($robotFile->firstDirectiveIs(RobotsFile::USER_AGENT)) {
                 $currentUserAgents[] = $robotFile->shiftArgument();
             }
-            while ($robotFile->firstDirectiveIs('allow', 'disallow')) {
-                $isAllowed = $robotFile->firstDirective() == 'allow';
+            while ($robotFile->firstDirectiveIs(RobotsFile::ALLOW, RobotsFile::DISALLOW)) {
+                $isAllowed = $robotFile->firstDirective() == RobotsFile::ALLOW;
                 $urlParts = array_filter(explode('/', $robotFile->shiftArgument()));
                 $this->tree->getNode($urlParts)->addRule($currentUserAgents, $isAllowed);
             }

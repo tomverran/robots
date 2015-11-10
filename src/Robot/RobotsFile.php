@@ -16,6 +16,12 @@ class RobotsFile
      */
     private $lines;
 
+    const USER_AGENT = 'user-agent';
+
+    const DISALLOW = 'disallow';
+
+    const ALLOW = 'allow';
+
     /**
      * Construct this Robots file
      * @param String $content
@@ -23,12 +29,18 @@ class RobotsFile
     public function __construct($content)
     {
         $withoutComments = preg_replace( '/#.*/', '', strtolower($content));
+
         foreach(explode("\n", $withoutComments) as $line) {
             $lineParts = array_filter(array_map('trim', explode(':', $line)));
-            if (count($lineParts) == 2) {
+            if ($this->lineIsValid($lineParts)) {
                 $this->lines[] = $lineParts;
             }
         }
+    }
+
+    private function lineIsValid($line) {
+        $validDirectives = [self::USER_AGENT, self::DISALLOW, self::ALLOW];
+        return count($line) == 2 && in_array($line[0], $validDirectives);
     }
 
     /**
