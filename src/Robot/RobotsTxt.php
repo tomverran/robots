@@ -19,7 +19,7 @@ class RobotsTxt
     public function __construct($contents)
     {
         $this->tree = new Leaf();
-        $this->parseFile($contents);
+        $this->parseFile(new RobotsFile($contents));
     }
 
     /**
@@ -27,35 +27,17 @@ class RobotsTxt
      * @param $robotFile
      * @throws \LogicException
      */
-    private function parseFile($robotFile)
+    private function parseFile(RobotsFile $robotFile)
     {
-        $currentUserAgent = null;
-        
-        $withoutComments = preg_replace( '/#.*/', '', strtolower( $robotFile ) );
-
-        foreach (explode( "\n", $withoutComments ) as $line) {
-            
-            $parts = array_filter(array_map('trim', explode(':', $line)));
-
-            //if we don't have a full rule or this is a comment..
-            if (count($parts) < 2) {
-                continue;
+        while($robotFile->hasLines()) {
+            $currentUserAgents = [];
+            while ($robotFile->firstDirectiveIs('user-agent')) {
+                $currentUserAgents[] = $robotFile->shiftArgument();
             }
-
-            list($directive, $argument) = $parts;
-
-            //handle setting our user agent
-            if ($directive == 'user-agent') {
-                $currentUserAgent = $argument;
-                continue;
-            } else if (!$currentUserAgent) {
-                throw new \LogicException('No user agent specified');
-            }
-
-            //the last case is allow / deny. Add to the trees
-            if ($directive == 'disallow' || $directive == 'allow') {
-                $urlParts = array_filter(explode('/', $argument));
-                $this->tree->getNode($urlParts)->addRule($currentUserAgent, $directive != 'disallow');
+            while ($robotFile->firstDirectiveIs('allow', 'disallow')) {
+                $isAllowed = $robotFile->firstDirective() == 'allow';
+                $urlParts = array_filter(explode('/', $robotFile->shiftArgument()));
+                $this->tree->getNode($urlParts)->addRule($currentUserAgents, $isAllowed);
             }
         }
     }
@@ -69,14 +51,6 @@ class RobotsTxt
     public function isAllowed($userAgent, $path)
     {
         $urlParts = array_filter(explode('/', $path));
-        $ret = $this->tree->allowed(strtolower($userAgent), $urlParts);
-
-        if ($ret === null) {
-            $ret = $this->tree->allowed('*', $urlParts);
-        }
-        if ($ret === null) {
-            $ret = true;
-        }
-        return $ret;
+        return $this->tree->allowed(strtolower($userAgent), $urlParts) !== false;
     }
 }
