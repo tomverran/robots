@@ -69,7 +69,7 @@ class RobotsTxt
     public function isAllowed($userAgent, $path)
     {
         $urlParts = array_filter(explode('/', $path));
-        $ret = $this->tree->allowed($userAgent, $urlParts);
+        $ret = $this->tree->allowed(strtolower($userAgent), $urlParts);
 
         if ($ret === null) {
             $ret = $this->tree->allowed('*', $urlParts);

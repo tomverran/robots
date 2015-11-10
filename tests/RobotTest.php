@@ -80,4 +80,12 @@ class RobotTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(self::getRobotsTxt('comment')->isAllowed('robot', '/comment'), 'lines with inline comments');
         $this->assertFalse(self::getRobotsTxt('comment')->isAllowed('robot', '/test'), 'lines following those with inline comments');
     }
+
+    /**
+     * This entire library should be case insensitive
+     */
+    public function testCapitalisedUserAgent()
+    {
+        $this->assertFalse(self::getRobotsTxt('multiUserAgent')->isAllowed('Googlebot', '/private/page.html'), 'Capitalised UA');
+    }
 } 

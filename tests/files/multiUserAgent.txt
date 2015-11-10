@@ -1,0 +1,6 @@
+User-agent: *
+User-agent: UA
+User-agent: Googlebot
+Allow: /
+Disallow: /private/
+Disallow: /secret/page.html
