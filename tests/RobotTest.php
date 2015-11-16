@@ -29,6 +29,22 @@ class RobotTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that we are not allowed to access a resource which is forbidden using the isDisallowed method
+     */
+    public function testBasicDisallow_Disallowed_method()
+    {
+        $this->assertTrue(self::getRobotsTxt('google')->isDisallowed('robot','/search'),'robot should not access /search');
+    }
+
+    /**
+     * Test that we are allowed to access a given resource using the isDisallowed method
+     */
+    public function testBasicIsDisallowed_returning_false() 
+    {
+        $this->assertFalse(self::getRobotsTxt('google')->isDisallowed('robot','/m/finance'),'robot should be able to access /m/finance');
+    }
+
+    /**
      * Test we are allowed to access a resource with Allow:
      */
     public function testBasicAllow()
