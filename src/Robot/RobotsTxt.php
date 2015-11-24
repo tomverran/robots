@@ -62,11 +62,6 @@ class RobotsTxt
      */
     public function isDisallowed($userAgent, $path) 
     {
-        $status = $this->isAllowed($userAgent, $path);
-        if ($status===true) {
-            return false;
-        }
-
-        return true;
+        return !$this->isAllowed($userAgent,$path);
     }
 }
