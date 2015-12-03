@@ -26,6 +26,7 @@ class RobotTest extends PHPUnit_Framework_TestCase
     public function testBasicDisallow()
     {
         $this->assertFalse(self::getRobotsTxt('google')->isAllowed('robot', '/print'), 'robot cannot access /print');
+        $this->assertTrue(self::getRobotsTxt('google')->isDisallowed('robot','/search'),'robot should not access /search');
     }
 
     /**
@@ -34,6 +35,7 @@ class RobotTest extends PHPUnit_Framework_TestCase
     public function testBasicAllow()
     {
         $this->assertTrue(self::getRobotsTxt('google')->isAllowed('robot', '/m/finance'), 'robot can access /m/finance');
+        $this->assertFalse(self::getRobotsTxt('google')->isDisallowed('robot','/m/finance'),'robot should be able to access /m/finance');
     }
 
     /**

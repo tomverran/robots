@@ -53,4 +53,15 @@ class RobotsTxt
         $urlParts = array_filter(explode('/', $path));
         return $this->tree->allowed(strtolower($userAgent), $urlParts) !== false;
     }
+
+    /**
+     * Is the given user agent disallowed access to the given resource?
+     * @param  string  $userAgent The user agent to check
+     * @param  string  $path The path of the url
+     * @return bool|null
+     */
+    public function isDisallowed($userAgent, $path) 
+    {
+        return !$this->isAllowed($userAgent,$path);
+    }
 }
