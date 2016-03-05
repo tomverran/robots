@@ -28,6 +28,11 @@ class AccessRulesTest extends \PHPUnit_Framework_TestCase
         $this->assertAllowed($urlPath, [$recordPath => false]);
     }
 
+    /*
+     * These tests are implemented with reference to http://www.robotstxt.org/norobots-rfc.txt
+     * With the exception of the first match being used, which is contradicted by Google
+     */
+
     /**
      * @test
      */
@@ -95,12 +100,80 @@ class AccessRulesTest extends \PHPUnit_Framework_TestCase
         $this->assertUrlMatches('/a/b.html', '/a/b.html');
     }
 
+    /*
+     * The below tests implement google's extensions to the robots txt syntax or test against their examples.
+     * https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt?hl=en#url-matching-based-on-path-values
+     */
+
     /**
      * @test
      */
-    public function givenMultiplePossibleMatches_returnFirstInList()
+    public function givenGoogleFishExamples_workAsExpected()
     {
-        $this->assertAllowed('/tmp', ['/tmp' => true, '/tm' => false]);
-        $this->assertDisallowed('/tmp', ['/tm' => false, '/tmp' => true]);
+        foreach(['/fish', '/fish.html', '/fish/salmon.html', '/fishheads', '/fishheads/yummy.html', '/fish.php?id=anything'] as $str) {
+            $this->assertAllowed('/fish*', [$str => true]);
+            $this->assertAllowed('/fish', [$str => true]);
+        }
+    }
+
+    /**
+     * @test
+     * "The trailing slash means this matches anything in this folder."
+     */
+    public function givenGoogleFishWithTrailingSlash_workAsExpected()
+    {
+        foreach(['/fish/', '/fish/?id=anything', '/fish/salmon.htm'] as $str) {
+            $this->assertUrlMatches('/fish/', $str);
+        }
+        foreach(['/fish', '/fish.html', '/Fish/Salmon.asp'] as $str) {
+            $this->assertUrlDoesNotMatch('/fish/', $str);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function givenMidRecordWildcard_expandWhenMatching()
+    {
+        foreach(['/filename.php', '/folder/filename.php', '/folder/filename.php?parameters', '/folder/any.php.file.html', '/filename.php/'] as $str) {
+            $this->assertUrlMatches('/*.php', $str);
+        }
+        foreach(['/', '/windows.PHP'] as $str) {
+            $this->assertUrlDoesNotMatch('/*.php', $str);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function givenTrailingDollar_AnchorMatchToEndOfString()
+    {
+        foreach(['/filename.php', '/folder/filename.php'] as $str) {
+            $this->assertUrlMatches('/*.php$', $str);
+        }
+        foreach(['/filename.php?parameters', '/filename.php/', '/filename.php5', '/windows.PHP'] as $str) {
+            $this->assertUrlDoesNotMatch('/*.php$', $str);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function givenFishWildcardExamples_workAsExpected()
+    {
+        foreach(['/fish.php', '/fishheads/catfish.php?parameters'] as $str) {
+            $this->assertUrlMatches('/fish*.php', $str);
+        }
+        $this->assertUrlDoesNotMatch('/fish*.php', '/Fish.PHP');
+    }
+
+    /**
+     * @test
+     */
+    public function givenMultipleMatches_pickMostSpecificRuleBasedOnLengthOfPathEntry()
+    {
+        $this->assertAllowed('/page', ['/p' => true, '/' => false]);
+        $this->assertAllowed('/page', ['/' => false, '/p' => true]);
+        $this->assertDisallowed('/page', ['/' => false]);
     }
 }

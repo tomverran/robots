@@ -11,7 +11,21 @@ class AccessRules
      */
     public function __construct(array $rules)
     {
+        uksort($rules, function($r1, $r2) {
+            return strlen($r2) - strlen($r1);
+        });
         $this->rules = $rules;
+    }
+
+    private function convertPathToRegex($path) {
+        $pathWithoutTrailingDollar = rtrim($path, '$');
+
+        $quotedWithWildcards = implode(array_map(function($input) {
+            return preg_quote($input, '#');
+        }, explode('*', $pathWithoutTrailingDollar)),'.*?');
+
+        $trailingDollar = $path == $pathWithoutTrailingDollar ? '' : '$';
+        return "#^${quotedWithWildcards}{$trailingDollar}#";
     }
 
     private function urlDecodeNonSlashes($str)
@@ -25,7 +39,7 @@ class AccessRules
     {
         $matches = [];
         foreach($this->rules as $ruleUrl => $allowed) {
-            if (strpos($this->urlDecodeNonSlashes($url), $this->urlDecodeNonSlashes($ruleUrl)) === 0) {
+            if (preg_match($this->convertPathToRegex($this->urlDecodeNonSlashes($ruleUrl)), $this->urlDecodeNonSlashes($url))) {
                 $matches[$ruleUrl] = $allowed;
             }
         }

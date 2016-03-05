@@ -6,4 +6,4 @@ Disallow: /private/
 Disallow: /secret/page.html
 User-agent: robot2
 Allow: /
-Disallow: /some/other/
+Disallow: /some/other
