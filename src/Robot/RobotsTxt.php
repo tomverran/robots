@@ -1,5 +1,9 @@
 <?php
 namespace tomverran\Robot;
+use tomverran\Robot\UserAgent\UserAgentList;
+use tomverran\Robot\UserAgent\UserAgentWildcard;
+use tomverran\Robot\UserAgent\UserAgentWildcardTest;
+
 /**
  * RobotsTxt.php
  * @author Tom
@@ -8,9 +12,9 @@ namespace tomverran\Robot;
 class RobotsTxt
 {
     /**
-     * @var Leaf
+     * @var Record[]
      */
-    private $tree;
+    private $records;
 
     /**
      * Construct this Robots.txt model
@@ -18,7 +22,6 @@ class RobotsTxt
      */
     public function __construct($contents)
     {
-        $this->tree = new Leaf();
         $this->parseFile(new RobotsFile($contents));
     }
 
@@ -31,14 +34,19 @@ class RobotsTxt
     {
         while($robotFile->hasLines()) {
             $currentUserAgents = [];
+
             while ($robotFile->firstDirectiveIs(RobotsFile::USER_AGENT)) {
                 $currentUserAgents[] = $robotFile->shiftArgument();
             }
+
+            $accessRules = [];
             while ($robotFile->firstDirectiveIs(RobotsFile::ALLOW, RobotsFile::DISALLOW)) {
                 $isAllowed = $robotFile->firstDirective() == RobotsFile::ALLOW;
-                $urlParts = array_filter(explode('/', $robotFile->shiftArgument()));
-                $this->tree->getNode($urlParts)->addRule($currentUserAgents, $isAllowed);
+                $accessRules[$robotFile->shiftArgument()] = $isAllowed;
             }
+
+            $ua = in_array('*', $currentUserAgents) ? new UserAgentWildcard : new UserAgentList($currentUserAgents);
+            $this->records[] = new Record($ua, new AccessRules($accessRules));
         }
     }
 
@@ -50,8 +58,12 @@ class RobotsTxt
      */
     public function isAllowed($userAgent, $path)
     {
-        $urlParts = array_filter(explode('/', $path));
-        return $this->tree->allowed(strtolower($userAgent), $urlParts) !== false;
+        foreach($this->records as $record) {
+            if (!$record->isAllowed($userAgent, $path)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

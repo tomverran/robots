@@ -1,12 +1,12 @@
 <?php
-use tomverran\Robot\RobotsTxt;
+namespace tomverran\Robot;
 
 /**
  * FieldsetTest.php
  * @author Tom
  * @since 14/03/14
  */
-class RobotTest extends PHPUnit_Framework_TestCase
+class RobotTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Get a RobotsTxt class loaded up with google's robots.txt
