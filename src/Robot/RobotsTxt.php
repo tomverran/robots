@@ -76,6 +76,10 @@ class RobotsTxt
      */
     public function isAllowed($userAgent, $path)
     {
+        if ($path == '/robots.txt') {
+            return true;
+        }
+
         $matching = array_filter($this->records, function(Record $r) use ($userAgent) {
             return $r->matches($userAgent);
         });
