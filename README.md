@@ -1,10 +1,11 @@
 Robots.txt checker
 ==================
 
-![Travis](https://travis-ci.org/tomverran/robots.svg?branch=master)
+[![Build Status](https://travis-ci.org/tomverran/robots.svg?branch=master)](https://travis-ci.org/tomverran/robots)
+[![Packagist](https://img.shields.io/packagist/v/tomverran/robots-txt-checker.svg)](https://packagist.org/packages/tomverran/robots-txt-checker)
 
 Given a robots.txt file this library will give you a straight forward yes/no as to whether you're allowed to access
-a given resource with a given user agent. Internally it organises the file into a tree.
+a given resource with a given user agent.
 
 Wildcards are supported.
 

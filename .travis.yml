@@ -1,6 +1,19 @@
 language: php
 php:
+  - 7.0
+  - 5.6
   - 5.5
   - 5.4
+
 before_script: composer install
-script: phpunit -c phpunit.xml
+script: phpunit -c phpunit.xml --coverage-clover build/logs/clover.xml
+
+after_script:
+  - vendor/bin/test-reporter
+
+addons:
+  code_climate:
+    repo_token:
+      secure: "AbkpzWeK7GVXdMTeCQ26TDH7kiTrP/spihgksSVEPvTAwI6oPlcs/lL7lt7zuPJ+geuNkuLHYJ2IreBU+qP35iPTnuVTftJA3BXMeDzcU+7iIxs2FCbnGLBmt9J/RKI9blIxJBYYrDHvfbVy3lK2PRv8dvs28voNleHEj8m4D5g="
+
+
