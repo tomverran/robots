@@ -1,8 +1,5 @@
 <?php
 namespace tomverran\Robot;
-use tomverran\Robot\UserAgent\UserAgentList;
-use tomverran\Robot\UserAgent\UserAgentWildcard;
-use tomverran\Robot\UserAgent\UserAgentWildcardTest;
 
 /**
  * RobotsTxt.php
@@ -16,37 +13,58 @@ class RobotsTxt
      */
     private $records;
 
+    const USER_AGENT = 'user-agent';
+    const DISALLOW = 'disallow';
+    const ALLOW = 'allow';
+
+
     /**
      * Construct this Robots.txt model
      * @param $contents
      */
     public function __construct($contents)
     {
-        $this->parseFile(new RobotsFile($contents));
+        $this->parseFile(new RobotsFile($contents, [self::USER_AGENT, self::ALLOW, self::DISALLOW]));
     }
 
     /**
      * Parse a robot file
      * @param $robotFile
-     * @throws \LogicException
      */
     private function parseFile(RobotsFile $robotFile)
     {
-        while($robotFile->hasLines()) {
-            $currentUserAgents = [];
+        $emptyRecord = [
+            'rules' => [],
+            'ua' => []
+        ];
 
-            while ($robotFile->firstDirectiveIs(RobotsFile::USER_AGENT)) {
-                $currentUserAgents[] = $robotFile->shiftArgument();
+        $fileRecords = [];
+        $lastDirective = '';
+
+        foreach($robotFile as $directive => $value) {
+
+            // add a new record if we have the beginning of a new set of UAs
+            if ($directive == self::USER_AGENT && $lastDirective != $directive) {
+                $fileRecords[] = $emptyRecord;
             }
 
-            $accessRules = [];
-            while ($robotFile->firstDirectiveIs(RobotsFile::ALLOW, RobotsFile::DISALLOW)) {
-                $isAllowed = $robotFile->firstDirective() == RobotsFile::ALLOW;
-                $accessRules[$robotFile->shiftArgument()] = $isAllowed;
+            //modify the current record in place
+            $currentRecord = &$fileRecords[count($fileRecords) - 1];
+
+            if ($directive == self::USER_AGENT) {
+                $currentRecord['ua'][] = $value;
             }
 
-            $ua = in_array('*', $currentUserAgents) ? new UserAgentWildcard : new UserAgentList($currentUserAgents);
-            $this->records[] = new Record($ua, new AccessRules($accessRules));
+            if ($directive == self::ALLOW || $directive == self::DISALLOW) {
+                $currentRecord['rules'][$value] = $directive == self::ALLOW;
+            }
+
+            $lastDirective = $directive;
+        }
+
+        $this->records = [];
+        foreach($fileRecords as $record) {
+            $this->records[] = new Record(new UserAgent($record['ua']), new AccessRules($record['rules']));
         }
     }
 
@@ -58,12 +76,15 @@ class RobotsTxt
      */
     public function isAllowed($userAgent, $path)
     {
-        foreach($this->records as $record) {
-            if (!$record->isAllowed($userAgent, $path)) {
-                return false;
-            }
-        }
-        return true;
+        $matching = array_filter($this->records, function(Record $r) use ($userAgent) {
+            return $r->matches($userAgent);
+        });
+
+        uasort($matching, function(Record $r1, Record $r2) use ($userAgent) {
+            return $r2->getMatchStrength($userAgent) - $r1->getMatchStrength($userAgent);
+        });
+
+        return empty($matching) || reset($matching)->isAllowed($userAgent, $path);
     }
 
     /**

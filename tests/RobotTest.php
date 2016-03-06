@@ -112,4 +112,12 @@ class RobotTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(self::getRobotsTxt('corrupted')->isAllowed('Googlebot', '/some/other'));
     }
+
+    public function testRfcExample()
+    {
+        $robots = self::getRobotsTxt('rfc');
+        $this->assertFalse($robots->isAllowed('unhipbot', '/'));
+        $this->assertTrue($robots->isAllowed('webcrawler', '/'));
+        $this->assertTrue($robots->isAllowed('excite', '/'));
+    }
 } 

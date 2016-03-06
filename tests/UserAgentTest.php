@@ -1,18 +1,20 @@
 <?php
 namespace tomverran\Robot\UserAgent;
 
-class UserAgentListTest extends \PHPUnit_Framework_TestCase
+use tomverran\Robot\UserAgent;
+
+class UserAgentTest extends \PHPUnit_Framework_TestCase
 {
     private function assertDoesNotMatch($userAgent, array $list)
     {
-        $this->assertFalse((new UserAgentList($list))->matches($userAgent),
+        $this->assertTrue(!count((new UserAgent($list))->getMatches($userAgent)),
             var_export($userAgent, true) . " should not match " . var_export($list, true));
 
     }
 
     private function assertMatches($userAgent, $list)
     {
-        $this->assertTrue((new UserAgentList($list))->matches($userAgent),
+        $this->assertTrue(count((new UserAgent($list))->getMatches($userAgent)) > 0,
             var_export($userAgent, true) ." should match " . var_export($list, true));
     }
 
@@ -80,5 +82,15 @@ class UserAgentListTest extends \PHPUnit_Framework_TestCase
     public function givenSubstringMatch_returnTrue()
     {
         $this->assertMatches('foo', ['Cats', 'Fred*', 'Googlebot', 'BotFoo/1.0', 'Dave/2.0']);
+    }
+    /**
+     * @test
+     */
+    public function givenWildcardAgent_alwaysMatch()
+    {
+        $wildcard = new UserAgent(['*']);
+        foreach(['FigTree/0.1 Robot libwww-perl/5.04', 'Googlebot', 'Tombot', '1234', 'aaaa'] as $ua) {
+            $this->assertTrue($wildcard->getMatches($ua) == ['*'], 'wilcard matches all');
+        }
     }
 }

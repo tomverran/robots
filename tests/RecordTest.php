@@ -1,6 +1,5 @@
 <?php
 namespace tomverran\Robot;
-use tomverran\Robot\UserAgent\UserAgentStub;
 
 /**
  * We're just testing wiring here
@@ -24,7 +23,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
      */
     public function givenNoUserAgentMatch_whenDeterminingIfUrlIsAllowed_returnTrue()
     {
-        $neverMatchingUserAgent = new UserAgentStub(false);
+        $neverMatchingUserAgent = new UserAgent([]);
         $this->assertTrue((new Record($neverMatchingUserAgent, $this->allUrlsAllowed))->isAllowed('Googlebot', '/foo'));
     }
 
@@ -33,7 +32,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
      */
     public function givenUserAgentMatch_delegateToAccessRules()
     {
-        $alwaysMatchingUserAgent = new UserAgentStub(true);
+        $alwaysMatchingUserAgent = new UserAgent(['*']);
         $this->assertFalse((new Record($alwaysMatchingUserAgent, $this->fooForbidden))->isAllowed('Googlebot', '/foo'));
         $this->assertTrue((new Record($alwaysMatchingUserAgent, $this->allUrlsAllowed))->isAllowed('Googlebot', '/foo'));
     }

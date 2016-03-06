@@ -39,7 +39,7 @@ class AccessRules
     {
         $matches = [];
         foreach($this->rules as $ruleUrl => $allowed) {
-            if (preg_match($this->convertPathToRegex($this->urlDecodeNonSlashes($ruleUrl)), $this->urlDecodeNonSlashes($url))) {
+            if ($ruleUrl && preg_match($this->convertPathToRegex($this->urlDecodeNonSlashes($ruleUrl)), $this->urlDecodeNonSlashes($url))) {
                 $matches[$ruleUrl] = $allowed;
             }
         }

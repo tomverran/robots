@@ -1,8 +1,6 @@
 <?php
 namespace tomverran\Robot;
-
-
-use tomverran\Robot\UserAgent\UserAgent;
+use tomverran\Robot\UserAgent;
 
 class Record
 {
@@ -22,8 +20,22 @@ class Record
         $this->ar = $ar;
     }
 
+    public function matches($userAgent)
+    {
+        $matches = $this->ua->getMatches($userAgent);
+        return !empty($matches);
+    }
+
+    public function getMatchStrength($userAgent)
+    {
+        if (!$this->matches($userAgent)) {
+            return 0;
+        }
+        return max(array_map('strlen', $this->ua->getMatches($userAgent)));
+    }
+
     public function isAllowed($userAgent, $url)
     {
-        return !$this->ua->matches($userAgent) || $this->ar->isAllowed($url);
+        return !$this->ua->getMatches($userAgent) || $this->ar->isAllowed($url);
     }
 }
