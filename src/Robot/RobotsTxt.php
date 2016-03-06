@@ -64,7 +64,9 @@ class RobotsTxt
 
         $this->records = [];
         foreach($fileRecords as $record) {
-            $this->records[] = new Record(new UserAgent($record['ua']), new AccessRules($record['rules']));
+            if (!empty($record['ua']) && !empty($record['rules'])) {
+                $this->records[] = new Record(new UserAgent($record['ua']), new AccessRules($record['rules']));
+            }
         }
     }
 
