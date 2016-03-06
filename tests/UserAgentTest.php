@@ -93,4 +93,17 @@ class UserAgentTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue($wildcard->getMatches($ua) == ['*'], 'wilcard matches all');
         }
     }
+
+    /**
+     * @test
+     * https://developers.google.com/webmasters/control-crawl-index/docs/robots_txt#order-of-precedence-for-user-agents
+     */
+    public function givenGoogleExamples_behaveAsExpected()
+    {
+        $googleUAs = new UserAgent(['googlebot-news', '*', 'googlebot']);
+        $this->assertContains('googlebot-news', $googleUAs->getMatches('Googlebot-News'));
+        $this->assertContains('googlebot', $googleUAs->getMatches('Googlebot-Images'));
+        $this->assertNotContains('googlebot-news', $googleUAs->getMatches('Googlebot-Images'));
+        $this->assertEquals(['*'], $googleUAs->getMatches('otherbot'));
+    }
 }

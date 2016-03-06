@@ -21,8 +21,8 @@ class UserAgent
         }
 
         $matches = array_filter($this->userAgents, function($elem) use($ua) {
-            return strpos($elem, $ua) !== false || $elem == '*';
+            return strpos($elem, $ua) !== false || strpos($ua, $elem) !== false || $elem == '*';
         });
-        return $matches;
+        return array_values($matches);
     }
 }

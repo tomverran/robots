@@ -36,4 +36,22 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse((new Record($alwaysMatchingUserAgent, $this->fooForbidden))->isAllowed('Googlebot', '/foo'));
         $this->assertTrue((new Record($alwaysMatchingUserAgent, $this->allUrlsAllowed))->isAllowed('Googlebot', '/foo'));
     }
+
+    /**
+     * @test
+     */
+    public function givenNoMatches_returnMatchStrengthOfZero()
+    {
+        $googleOnly = new Record(new UserAgent(['Googlebot']), new AccessRules([]));
+        $this->assertTrue($googleOnly->getMatchStrength('Bing') == 0, 'No match at all means a match strength of zero');
+    }
+
+    /**
+     * @test
+     */
+    public function givenMatch_returnLengthOfMatchedUAAsMatchStrength()
+    {
+        $googleOnly = new Record(new UserAgent(['Googlebot']), new AccessRules([]));
+        $this->assertTrue($googleOnly->getMatchStrength('G') == 9, 'Length of the matched UA is the strength');
+    }
 }
