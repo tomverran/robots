@@ -6,9 +6,7 @@ Robots.txt checker
 Given a robots.txt file this library will give you a straight forward yes/no as to whether you're allowed to access
 a given resource with a given user agent. Internally it organises the file into a tree.
 
-Wildcards are supported in a basic way:
-
-`Disallow: /hello/*/world` will disallow `/hello/whatever/world` but won't disallow `/hello/what/who/world`
+Wildcards are supported.
 
 If you find any bugs with this library please don't hesitate to let me know, either create an issue on GitHub or submit a pull request.
 

@@ -1,12 +1,12 @@
 <?php
-use tomverran\Robot\RobotsTxt;
+namespace tomverran\Robot;
 
 /**
  * FieldsetTest.php
  * @author Tom
  * @since 14/03/14
  */
-class RobotTest extends PHPUnit_Framework_TestCase
+class RobotTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Get a RobotsTxt class loaded up with google's robots.txt
@@ -18,6 +18,16 @@ class RobotTest extends PHPUnit_Framework_TestCase
     {
         $d = DIRECTORY_SEPARATOR;
         return new RobotsTxt(file_get_contents(dirname(__FILE__) . $d . 'files' . $d . $file . '.txt'));
+    }
+
+    private function assertRfcExample($url, $allowed, $disallowed) {
+        $robots = self::getRobotsTxt('rfc');
+        foreach($allowed as $allowedUa) {
+            $this->assertTrue($robots->isAllowed($allowedUa, $url), "$allowedUa allowed $url");
+        }
+        foreach($disallowed as $disallowedUa) {
+            $this->assertFalse($robots->isAllowed($disallowedUa, $url), "$disallowedUa disallowed $url");
+        }
     }
 
     /**
@@ -111,5 +121,27 @@ class RobotTest extends PHPUnit_Framework_TestCase
     public function testFileWithInvalidLines()
     {
         $this->assertTrue(self::getRobotsTxt('corrupted')->isAllowed('Googlebot', '/some/other'));
+    }
+
+    public function testRfcExample()
+    {
+        $unhipBot = 'unhipbot';
+        $webcrawler = 'webcrawler';
+        $excite = 'excite';
+        $other = 'googlebot';
+
+        $this->assertRfcExample('/', [$webcrawler, $excite], [$other, $unhipBot]);
+        $this->assertRfcExample('/index.html', [$webcrawler, $excite], [$other, $unhipBot]);
+        $this->assertRfcExample('/robots.txt', [$webcrawler, $excite, $other, $unhipBot], []);
+        $this->assertRfcExample('/server.html', [$webcrawler, $excite, $other], [$unhipBot]);
+        $this->assertRfcExample('/services/fast.html', [$webcrawler, $excite, $other], [$unhipBot]);
+        $this->assertRfcExample('/services/slow.html', [$webcrawler, $excite, $other], [$unhipBot]);
+        $this->assertRfcExample('/orgo.gif', [$webcrawler, $excite], [$unhipBot, $other]);
+        $this->assertRfcExample('/org/about.html', [$webcrawler, $excite, $other], [$unhipBot]);
+        $this->assertRfcExample('/org/plans.html', [$webcrawler, $excite], [$unhipBot, $other]);
+        $this->assertRfcExample('/%7Ejim/jim.html', [$webcrawler, $excite], [$unhipBot, $other]);
+        $this->assertRfcExample('/%7Emak/mak.html', [$webcrawler, $excite, $other], [$unhipBot]);
+
+
     }
 } 

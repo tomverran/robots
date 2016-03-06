@@ -1,5 +1,6 @@
 <?php
 namespace tomverran\Robot;
+
 /**
  * RobotsTxt.php
  * @author Tom
@@ -8,9 +9,14 @@ namespace tomverran\Robot;
 class RobotsTxt
 {
     /**
-     * @var Leaf
+     * @var Record[]
      */
-    private $tree;
+    private $records;
+
+    const USER_AGENT = 'user-agent';
+    const DISALLOW = 'disallow';
+    const ALLOW = 'allow';
+
 
     /**
      * Construct this Robots.txt model
@@ -18,26 +24,48 @@ class RobotsTxt
      */
     public function __construct($contents)
     {
-        $this->tree = new Leaf();
-        $this->parseFile(new RobotsFile($contents));
+        $this->parseFile(new RobotsFile($contents, [self::USER_AGENT, self::ALLOW, self::DISALLOW]));
     }
 
     /**
      * Parse a robot file
      * @param $robotFile
-     * @throws \LogicException
      */
     private function parseFile(RobotsFile $robotFile)
     {
-        while($robotFile->hasLines()) {
-            $currentUserAgents = [];
-            while ($robotFile->firstDirectiveIs(RobotsFile::USER_AGENT)) {
-                $currentUserAgents[] = $robotFile->shiftArgument();
+        $emptyRecord = [
+            'rules' => [],
+            'ua' => []
+        ];
+
+        $fileRecords = [];
+        $lastDirective = '';
+
+        foreach($robotFile as $directive => $value) {
+
+            // add a new record if we have the beginning of a new set of UAs
+            if ($directive == self::USER_AGENT && $lastDirective != $directive) {
+                $fileRecords[] = $emptyRecord;
             }
-            while ($robotFile->firstDirectiveIs(RobotsFile::ALLOW, RobotsFile::DISALLOW)) {
-                $isAllowed = $robotFile->firstDirective() == RobotsFile::ALLOW;
-                $urlParts = array_filter(explode('/', $robotFile->shiftArgument()));
-                $this->tree->getNode($urlParts)->addRule($currentUserAgents, $isAllowed);
+
+            //modify the current record in place
+            $currentRecord = &$fileRecords[count($fileRecords) - 1];
+
+            if ($directive == self::USER_AGENT) {
+                $currentRecord['ua'][] = $value;
+            }
+
+            if ($directive == self::ALLOW || $directive == self::DISALLOW) {
+                $currentRecord['rules'][$value] = $directive == self::ALLOW;
+            }
+
+            $lastDirective = $directive;
+        }
+
+        $this->records = [];
+        foreach($fileRecords as $record) {
+            if (!empty($record['ua']) && !empty($record['rules'])) {
+                $this->records[] = new Record(new UserAgent($record['ua']), new AccessRules($record['rules']));
             }
         }
     }
@@ -50,8 +78,19 @@ class RobotsTxt
      */
     public function isAllowed($userAgent, $path)
     {
-        $urlParts = array_filter(explode('/', $path));
-        return $this->tree->allowed(strtolower($userAgent), $urlParts) !== false;
+        if ($path == '/robots.txt') {
+            return true;
+        }
+
+        $matching = array_filter($this->records, function(Record $r) use ($userAgent) {
+            return $r->matches($userAgent);
+        });
+
+        uasort($matching, function(Record $r1, Record $r2) use ($userAgent) {
+            return $r2->getMatchStrength($userAgent) - $r1->getMatchStrength($userAgent);
+        });
+
+        return empty($matching) || reset($matching)->isAllowed($userAgent, $path);
     }
 
     /**

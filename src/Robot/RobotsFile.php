@@ -9,18 +9,12 @@
 namespace tomverran\Robot;
 
 
-class RobotsFile
+class RobotsFile implements \Iterator
 {
     /**
-     * @var String[]
+     * @var \ArrayIterator
      */
-    private $lines;
-
-    const USER_AGENT = 'user-agent';
-
-    const DISALLOW = 'disallow';
-
-    const ALLOW = 'allow';
+    private $lineIterator;
 
     /**
      * Construct this Robots file
@@ -29,51 +23,73 @@ class RobotsFile
     public function __construct($content)
     {
         $withoutComments = preg_replace( '/#.*/', '', strtolower($content));
+        $lines = [];
 
         foreach(explode("\n", $withoutComments) as $line) {
             $lineParts = array_filter(array_map('trim', explode(':', $line)));
-            if ($this->lineIsValid($lineParts)) {
-                $this->lines[] = $lineParts;
+            if (!empty($lineParts)) {
+                $lines[] = $lineParts;
             }
         }
-    }
 
-    private function lineIsValid($line) {
-        $validDirectives = [self::USER_AGENT, self::DISALLOW, self::ALLOW];
-        return count($line) == 2 && in_array($line[0], $validDirectives);
+        $this->lineIterator = new \ArrayIterator($lines);
     }
 
     /**
-     * Get the first directive in the file
+     * Return the current element
+     * @link http://php.net/manual/en/iterator.current.php
+     * @return mixed Can return any type.
+     * @since 5.0.0
      */
-    public function firstDirective()
+    public function current()
     {
-        return $this->lines[0][0];
-    }
-
-    public function firstDirectiveIs($args)
-    {
-        if (!$this->hasLines()) {
-            return false;
-        }
-        return in_array($this->firstDirective(), func_get_args());
+        $cur = $this->lineIterator->current();
+        return count($cur) > 1 ? $cur[1] : '';
     }
 
     /**
-     * Get the argument of the first directive,
-     * and shift the file to remove it
+     * Move forward to next element
+     * @link http://php.net/manual/en/iterator.next.php
+     * @return void Any returned value is ignored.
+     * @since 5.0.0
      */
-    public function shiftArgument()
+    public function next()
     {
-        return array_shift($this->lines)[1];
+        $this->lineIterator->next();
     }
 
     /**
-     * Does this file have any remaining lines
-     * @return bool
+     * Return the key of the current element
+     * @link http://php.net/manual/en/iterator.key.php
+     * @return mixed scalar on success, or null on failure.
+     * @since 5.0.0
      */
-    public function hasLines()
+    public function key()
     {
-        return !empty($this->lines);
+        $cur = $this->lineIterator->current();
+        return $cur[0];
+    }
+
+    /**
+     * Checks if current position is valid
+     * @link http://php.net/manual/en/iterator.valid.php
+     * @return boolean The return value will be casted to boolean and then evaluated.
+     * Returns true on success or false on failure.
+     * @since 5.0.0
+     */
+    public function valid()
+    {
+        return $this->lineIterator->valid();
+    }
+
+    /**
+     * Rewind the Iterator to the first element
+     * @link http://php.net/manual/en/iterator.rewind.php
+     * @return void Any returned value is ignored.
+     * @since 5.0.0
+     */
+    public function rewind()
+    {
+        $this->lineIterator->rewind();
     }
 }
