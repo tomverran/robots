@@ -82,6 +82,16 @@ class RobotsTxt
             return true;
         }
 
+        /** @var Record[] $exactMatches */
+        $exactMatches = array_filter($this->records, function(Record $r) use ($userAgent) {
+            return $r->matchesExactly($userAgent);
+        });
+
+        if (!empty($exactMatches)) {
+            $firstMatch = array_shift($exactMatches);
+            return $firstMatch->isAllowed($userAgent, $path);
+        }
+
         $matching = array_filter($this->records, function(Record $r) use ($userAgent) {
             return $r->matches($userAgent);
         });

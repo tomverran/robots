@@ -141,7 +141,11 @@ class RobotTest extends \PHPUnit_Framework_TestCase
         $this->assertRfcExample('/org/plans.html', [$webcrawler, $excite], [$unhipBot, $other]);
         $this->assertRfcExample('/%7Ejim/jim.html', [$webcrawler, $excite], [$unhipBot, $other]);
         $this->assertRfcExample('/%7Emak/mak.html', [$webcrawler, $excite, $other], [$unhipBot]);
+    }
 
-
+    public function testExactMatchesBeatPartial()
+    {
+        $this->assertTrue(self::getRobotsTxt('match')->isAllowed('Googlebot-News', '/'));
+        $this->assertTrue(self::getRobotsTxt('match')->isDisallowed('Googlebot', '/'));
     }
 } 
