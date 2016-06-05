@@ -145,7 +145,17 @@ class RobotTest extends \PHPUnit_Framework_TestCase
 
     public function testExactMatchesBeatPartial()
     {
-        $this->assertTrue(self::getRobotsTxt('match')->isAllowed('Googlebot-News', '/'));
-        $this->assertTrue(self::getRobotsTxt('match')->isDisallowed('Googlebot', '/'));
+        $this->assertTrue(self::getRobotsTxt('precedence')->isAllowed('Googlebot-News', '/news'));
+        $this->assertTrue(self::getRobotsTxt('precedence')->isDisallowed('Googlebot', '/news'));
+    }
+
+    public function testGooglePrecedenceSpec()
+    {
+        $g = self::getRobotsTxt('precedence');
+        $this->assertTrue($g->isAllowed('Googlebot-News', '/news'));
+        $this->assertTrue($g->isAllowed('Googlebot', '/bot'));
+
+        $this->assertTrue($g->isAllowed('Googlebot-Images', '/bot'));
+        $this->assertTrue($g->isDisallowed('Googlebot-Images', '/news'));
     }
 } 
