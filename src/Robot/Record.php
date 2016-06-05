@@ -38,4 +38,9 @@ class Record
     {
         return !$this->ua->getMatches($userAgent) || $this->ar->isAllowed($url);
     }
+
+    public function matchesExactly($userAgent)
+    {
+        return in_array(strtolower($userAgent), $this->ua->getMatches($userAgent));
+    }
 }

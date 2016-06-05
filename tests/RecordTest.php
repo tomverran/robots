@@ -54,4 +54,17 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $googleOnly = new Record(new UserAgent(['Googlebot']), new AccessRules([]));
         $this->assertTrue($googleOnly->getMatchStrength('G') == 9, 'Length of the matched UA is the strength');
     }
+
+    /**
+     * @test
+     */
+    public function givenExactMatch_flagAsBeingExact()
+    {
+        $googleOnly = new Record(new UserAgent(['Googlebot']), new AccessRules([]));
+        $this->assertTrue($googleOnly->matchesExactly('Googlebot'));
+        $this->assertTrue($googleOnly->matchesExactly('googlebot'));
+
+        $this->assertFalse($googleOnly->matchesExactly('google'));
+        $this->assertFalse($googleOnly->matchesExactly('googlebot-news'));
+    }
 }
