@@ -25,7 +25,7 @@ class RobotsFile implements \Iterator
         $withoutComments = preg_replace( '/#.*/', '', strtolower($content));
         $lines = [];
 
-        foreach(explode("\n", $withoutComments) as $line) {
+        foreach(preg_split("/[\r\n]+/", $withoutComments) as $line) {
             $lineParts = array_filter(array_map('trim', explode(':', $line)));
             if (!empty($lineParts)) {
                 $lines[] = $lineParts;
