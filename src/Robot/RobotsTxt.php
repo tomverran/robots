@@ -42,7 +42,8 @@ class RobotsTxt
         $lastDirective = '';
 
         foreach($robotFile as $directive => $value) {
-
+            $directive = strtolower($directive);
+            
             // add a new record if we have the beginning of a new set of UAs
             if ($directive == self::USER_AGENT && $lastDirective != $directive) {
                 $fileRecords[] = $emptyRecord;
