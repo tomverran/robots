@@ -22,7 +22,7 @@ class RobotsFile implements \Iterator
      */
     public function __construct($content)
     {
-        $withoutComments = preg_replace( '/#.*/', '', strtolower($content));
+        $withoutComments = preg_replace( '/#.*/', '', $content);
         $lines = [];
 
         foreach(preg_split("/[\r\n]+/", $withoutComments) as $line) {
