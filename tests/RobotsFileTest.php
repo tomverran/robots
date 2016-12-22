@@ -27,8 +27,8 @@ class RobotsFileTest extends \PHPUnit_Framework_TestCase
     public function givenCrOnlyLineBreaks_pickUpTwoLines($newline)
     {
         $test = $this->getTestFile($newline);
-        $this->assertEquals(['user-agent', '*'], [$test->key(), $test->current()]);
+        $this->assertEquals(['User-Agent', '*'], [$test->key(), $test->current()]);
         $test->next();
-        $this->assertEquals(['disallow', '/'], [$test->key(), $test->current()]);
+        $this->assertEquals(['Disallow', '/'], [$test->key(), $test->current()]);
     }
 }
