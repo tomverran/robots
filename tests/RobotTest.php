@@ -158,4 +158,17 @@ class RobotTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($g->isAllowed('Googlebot-Images', '/bot'));
         $this->assertTrue($g->isDisallowed('Googlebot-Images', '/news'));
     }
-} 
+
+    public function testCaseSensitivePaths()
+    {
+        $g = self::getRobotsTxt('caseSensitive');
+        $this->assertFalse($g->isAllowed('Googlebot', '/lowercase.html'));
+        $this->assertTrue($g->isAllowed('Googlebot', '/LOWERCASE.HTML'));
+
+        $this->assertTrue($g->isAllowed('Googlebot', '/camelcase.html'));
+        $this->assertFalse($g->isAllowed('Googlebot', '/CamelCase.html'));
+
+        $this->assertTrue($g->isAllowed('Googlebot', '/uppercase.html'));
+        $this->assertFalse($g->isAllowed('Googlebot', '/UPPERCASE.HTML'));
+    }
+}
