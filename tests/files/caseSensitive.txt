@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /lowercase.html
+Disallow: /CamelCase.html
+Disallow: /UPPERCASE.HTML
+Allow: /
