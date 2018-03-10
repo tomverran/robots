@@ -1,8 +1,8 @@
 <?php
 namespace tomverran\Robot;
+use \PHPUnit\Framework\TestCase;
 
-
-class RobotsFileTest extends \PHPUnit_Framework_TestCase
+class RobotsFileTest extends TestCase
 {
 
     public function getTestFile($separator)

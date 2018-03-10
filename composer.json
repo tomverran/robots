@@ -3,20 +3,20 @@
     "type": "library",
     "description": "Given a robots.txt file, user agent and URL path will tell you whether you're allowed to access a page",
     "keywords": ["crawler", "robots.txt"],
-    "homepage": "https://carefulcoder.co.uk",
+    "homepage": "https://tvc.io",
     "license": "MIT",
     "authors": [
         {
             "name": "Tom Verran",
-            "homepage": "https://carefulcoder.co.uk",
+            "homepage": "https://tvc.io",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=7.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "3.7.*",
+        "phpunit/phpunit": "~7",
         "codeclimate/php-test-reporter": "dev-master"
     },
     "autoload": {

@@ -47,6 +47,13 @@ use \tomverran\Robot\RobotsTxt;
 $robotsTxt = new RobotsTxt(file_get_contents('http://your-site-here/robots.txt'));
 $canViewPage = $robotsTxt->isAllowed('my-user-agent', '/some/path/');
 ```
+
+Local development
+-----------------
+
+If you don't have PHP set up on your local machine but do have Docker you can run `./tests.sh` which will build 
+a docker image with PHP and composer before using it to run the tests.
+
 License
 -------
 

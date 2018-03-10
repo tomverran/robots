@@ -1,12 +1,13 @@
 <?php
 namespace tomverran\Robot;
+use \PHPUnit\Framework\TestCase;
 
 /**
  * FieldsetTest.php
  * @author Tom
  * @since 14/03/14
  */
-class RobotTest extends \PHPUnit_Framework_TestCase
+class RobotTest extends TestCase
 {
     /**
      * Get a RobotsTxt class loaded up with google's robots.txt
