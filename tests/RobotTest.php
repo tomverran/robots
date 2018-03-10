@@ -171,4 +171,22 @@ class RobotTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($g->isAllowed('Googlebot', '/uppercase.html'));
         $this->assertFalse($g->isAllowed('Googlebot', '/UPPERCASE.HTML'));
     }
+
+    /**
+     * Do not emit an E_NOTICE with an empty needle from strpos when a user-agent line is invalid (empty).
+     * This effectively ignores the line.
+     */
+    public function testHandlesEmptyUserAgentLine()
+    {
+        $invalid_text = <<<EOF
+User-agent: foo
+User-agent:
+Disallow: /
+EOF;
+
+        $g = new RobotsTxt($invalid_text);
+
+        $this->assertFalse($g->isAllowed('foo', '/something'));
+        $this->assertTrue($g->isAllowed('Googlebot', '/something'));
+    }
 }
