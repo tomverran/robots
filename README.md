@@ -33,7 +33,7 @@ or add the following to your composer.json:
 
 ```json
 "require": {
-    "tomverran/robots-txt-checker": "^1.12"
+    "tomverran/robots-txt-checker": "^1.15"
 }
 ```
 
@@ -52,7 +52,7 @@ License
 
 tl;dr MIT license
 
-Copyright (c) 2014, 2016 Tom Verran
+Copyright (c) 2014, 2018 Tom Verran
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
