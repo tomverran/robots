@@ -6,7 +6,7 @@ php:
   - 5.4
 
 before_script: composer install
-script: phpunit -c phpunit.xml --coverage-clover build/logs/clover.xml
+script: vendor/bin/phpunit -c phpunit.xml --coverage-clover build/logs/clover.xml
 
 after_script:
   - vendor/bin/test-reporter
