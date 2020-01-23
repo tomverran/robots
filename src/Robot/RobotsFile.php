@@ -48,7 +48,6 @@ class RobotsFile implements \Iterator
         if (!is_array($cur) || !array_key_exists(1, $cur)) {
             return '';
         }
-
         return count($cur) > 1 ? $cur[1] : '';
     }
 
