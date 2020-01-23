@@ -1,0 +1,10 @@
+<!doctype html>
+<head><title>test</title>
+    <style>
+    * {
+    }
+    *::before, <-- THIS
+    ....
+    </style>
+</head>
+</html>
