@@ -31,4 +31,40 @@ class RobotsFileTest extends \PHPUnit_Framework_TestCase
         $test->next();
         $this->assertEquals(['Disallow', '/'], [$test->key(), $test->current()]);
     }
+
+
+    public function testInvalidDataIn()
+    {
+
+        $file = <<<EOF
+User-Agent: SomeUserAgent
+Allow: x
+Disallow:
+EOF;
+        $robots = new RobotsFile($file);
+        $lines = implode(',', iterator_to_array($robots));
+        $this->assertEquals('SomeUserAgent,x,', $lines);
+
+    }
+
+
+    public function testEmptyfile()
+    {
+
+        $file = '
+Test          
+';
+
+        $robots = new RobotsFile($file);
+
+
+        $found = [];
+
+        foreach($robots as $key => $value ){
+            $found[$key] = $value;
+        }
+
+        $this->assertEquals(['Test' => ''], $found);
+
+    }
 }
