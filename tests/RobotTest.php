@@ -189,4 +189,25 @@ EOF;
         $this->assertFalse($g->isAllowed('foo', '/something'));
         $this->assertTrue($g->isAllowed('Googlebot', '/something'));
     }
+
+    /**
+     * Sometimes we might get rubbish with a :: in it, which will confuse the parser...
+     */
+    public function testHtmlAndCSS() {
+        $html = <<<EOF
+<!doctype html>
+<head><title>test</title>
+    <style>
+    * {
+    }
+    *::before, <-- THIS
+    ....
+    </style>
+</head>
+</html>
+
+EOF;
+        $g = new RobotsTxt($html);
+        $this->assertTrue($g->isAllowed('foo', '/something'));
+    }
 }
