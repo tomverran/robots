@@ -32,31 +32,34 @@ class RobotsFileTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['Disallow', '/'], [$test->key(), $test->current()]);
     }
 
+
+    /**
+     * Get a RobotsTxt class loaded up with google's robots.txt
+     * which is like, the most complex one I've seen.
+     * @param string $file The filename
+     * @return RobotsTxt
+     */
+    private static function getRobotsFile($file)
+    {
+        $d = DIRECTORY_SEPARATOR;
+        return new RobotsFile(file_get_contents(dirname(__FILE__) . $d . 'files' . $d . $file . '.txt'));
+    }
+
     public function testInvalidDataIn()
     {
-        $file = <<<EOF
-User-Agent: SomeUserAgent
-Allow: x
-Disallow:
-EOF;
-        $robots = new RobotsFile($file);
+        $robots = self::getRobotsFile('invalid-data-in');
         $lines = implode(',', iterator_to_array($robots));
-
         $this->assertEquals('SomeUserAgent,x,', $lines);
     }
 
     public function testEmptyfile()
     {
-        $file = '
-Test          
-';
+        $robots = self::getRobotsFile('empty-file');
+        $this->assertEmpty(iterator_to_array($robots));
+    }
 
-        $robots = new RobotsFile($file);
-        $found = [];
-        foreach($robots as $key => $value ){
-            $found[$key] = $value;
-        }
-
-        $this->assertEquals(['Test' => ''], $found);
+    public function testTestContent() {
+        $robots = self::getRobotsFile('test');
+        $this->assertEquals(['Test' => ''], iterator_to_array($robots));
     }
 }

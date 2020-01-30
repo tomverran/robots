@@ -1,0 +1,3 @@
+User-Agent: SomeUserAgent
+Allow: x
+Disallow:
