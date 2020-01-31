@@ -178,15 +178,20 @@ class RobotTest extends \PHPUnit_Framework_TestCase
      */
     public function testHandlesEmptyUserAgentLine()
     {
-        $invalid_text = <<<EOF
-User-agent: foo
-User-agent:
-Disallow: /
-EOF;
 
-        $g = new RobotsTxt($invalid_text);
+        $g = self::getRobotsTxt('empty-useragent');
 
         $this->assertFalse($g->isAllowed('foo', '/something'));
         $this->assertTrue($g->isAllowed('Googlebot', '/something'));
+    }
+
+    /**
+     * Sometimes we might get rubbish with a :: in it, which will confuse the parser...
+     */
+    public function testHtmlAndCSS() {
+
+        $g = self::getRobotsTxt('html-with-css');
+
+        $this->assertTrue($g->isAllowed('foo', '/something'));
     }
 }

@@ -44,6 +44,10 @@ class RobotsFile implements \Iterator
     public function current()
     {
         $cur = $this->lineIterator->current();
+
+        if (!is_array($cur) || !array_key_exists(1, $cur)) {
+            return '';
+        }
         return count($cur) > 1 ? $cur[1] : '';
     }
 

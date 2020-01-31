@@ -24,7 +24,7 @@ class RobotsTxt
      */
     public function __construct($contents)
     {
-        $this->parseFile(new RobotsFile($contents, [self::USER_AGENT, self::ALLOW, self::DISALLOW]));
+        $this->parseFile(new RobotsFile($contents));
     }
 
     /**

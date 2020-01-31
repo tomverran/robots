@@ -7,7 +7,7 @@ class AccessRules
     private $rules;
 
     /**
-     * @param Boolean[] $rules A map of path => allowed
+     * @param string[] $rules A map of path => allowed
      */
     public function __construct(array $rules)
     {
