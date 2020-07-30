@@ -20,9 +20,9 @@ class AccessRules
     private function convertPathToRegex($path) {
         $pathWithoutTrailingDollar = rtrim($path, '$');
 
-        $quotedWithWildcards = implode(array_map(function($input) {
+        $quotedWithWildcards = implode('.*?', array_map(function($input) {
             return preg_quote($input, '#');
-        }, explode('*', $pathWithoutTrailingDollar)),'.*?');
+        }, explode('*', $pathWithoutTrailingDollar)));
 
         $trailingDollar = $path == $pathWithoutTrailingDollar ? '' : '$';
         return "#^${quotedWithWildcards}{$trailingDollar}#";
@@ -30,9 +30,9 @@ class AccessRules
 
     private function urlDecodeNonSlashes($str)
     {
-        return implode(array_map(function($input) {
+        return implode('', array_map(function($input) {
             return strtolower($input) == '%2f' ? $input : urldecode($input);
-        }, preg_split('/(%2F)/i', $str, -1, PREG_SPLIT_DELIM_CAPTURE)), '');
+        }, preg_split('/(%2F)/i', $str, -1, PREG_SPLIT_DELIM_CAPTURE)));
     }
 
     public function isAllowed($url)
