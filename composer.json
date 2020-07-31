@@ -1,5 +1,5 @@
 {
-    "name": "garrick3491/robots-txt-checker",
+    "name": "tomverran/robots-txt-checker",
     "type": "library",
     "description": "Given a robots.txt file, user agent and URL path will tell you whether you're allowed to access a page",
     "keywords": ["crawler", "robots.txt"],
