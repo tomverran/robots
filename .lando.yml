@@ -1,5 +1,0 @@
-name: robots
-recipe: lamp
-config:
-  php: 7.4
-  xdebug: true
