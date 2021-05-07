@@ -5,7 +5,7 @@ namespace tomverran\Robot;
  * We're just testing wiring here
  * @package tomverran\Robot
  */
-class RecordTest extends \PHPUnit_Framework_TestCase
+class RecordTest extends \PHPUnit\Framework\TestCase
 {
     // a stub could be made for these but I figured it isn't worth it really
     // if this test gets broken due to AccessRules being broken it might be worth it

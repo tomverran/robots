@@ -2,7 +2,7 @@
 namespace tomverran\Robot;
 
 
-class RobotsFileTest extends \PHPUnit_Framework_TestCase
+class RobotsFileTest extends \PHPUnit\Framework\TestCase
 {
 
     public function getTestFile($separator)

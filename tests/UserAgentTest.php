@@ -3,7 +3,7 @@ namespace tomverran\Robot\UserAgent;
 
 use tomverran\Robot\UserAgent;
 
-class UserAgentTest extends \PHPUnit_Framework_TestCase
+class UserAgentTest extends \PHPUnit\Framework\TestCase
 {
     private function assertDoesNotMatch($userAgent, array $list)
     {
