@@ -28,10 +28,12 @@ class Record
 
     public function getMatchStrength($userAgent)
     {
-        if (!$this->matches($userAgent)) {
+        $matches = $this->ua->getMatches($userAgent);
+
+        if (empty($matches)) {
             return 0;
         }
-        return max(array_map('strlen', $this->ua->getMatches($userAgent)));
+        return max(array_map('strlen', $matches));
     }
 
     public function isAllowed($userAgent, $url)

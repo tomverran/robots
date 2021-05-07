@@ -13,7 +13,7 @@ class RecordTest extends \PHPUnit\Framework\TestCase
     private $allUrlsAllowed;
     private $fooForbidden;
 
-    public function setUp() {
+    public function setUp() : void {
         $this->fooForbidden = new AccessRules(['/foo' => false]);
         $this->allUrlsAllowed = new AccessRules([]);
     }
