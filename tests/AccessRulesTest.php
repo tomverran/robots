@@ -3,7 +3,7 @@ namespace tomverran\Robot\UserAgent;
 
 use tomverran\Robot\AccessRules;
 
-class AccessRulesTest extends \PHPUnit_Framework_TestCase
+class AccessRulesTest extends \PHPUnit\Framework\TestCase
 {
     private function assertAllowed($url, array $rules)
     {

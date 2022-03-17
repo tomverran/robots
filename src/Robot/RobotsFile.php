@@ -18,7 +18,7 @@ class RobotsFile implements \Iterator
 
     /**
      * Construct this Robots file
-     * @param String $content
+     * @param string $content
      */
     public function __construct($content)
     {

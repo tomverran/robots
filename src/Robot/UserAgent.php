@@ -13,6 +13,10 @@ class UserAgent
         $this->userAgents = array_map('strtolower', $userAgents);
     }
 
+    /**
+     * @param $userAgent
+     * @return array<int, string>
+     */
     public function getMatches($userAgent)
     {
         $ua = strtolower($userAgent);
@@ -23,6 +27,7 @@ class UserAgent
         $matches = array_filter($this->userAgents, function($elem) use($ua) {
             return strpos($elem, $ua) !== false || strpos($ua, $elem) !== false || $elem == '*';
         });
+
         return array_values($matches);
     }
 }
