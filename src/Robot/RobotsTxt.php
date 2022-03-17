@@ -19,8 +19,7 @@ class RobotsTxt
 
 
     /**
-     * Construct this Robots.txt model
-     * @param $contents
+     * @param string $contents
      */
     public function __construct($contents)
     {
@@ -29,7 +28,7 @@ class RobotsTxt
 
     /**
      * Parse a robot file
-     * @param $robotFile
+     * @param RobotsFile $robotFile
      */
     private function parseFile(RobotsFile $robotFile)
     {
