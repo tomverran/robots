@@ -25,7 +25,7 @@ class AccessRules
         }, explode('*', $pathWithoutTrailingDollar)));
 
         $trailingDollar = $path == $pathWithoutTrailingDollar ? '' : '$';
-        return "#^${quotedWithWildcards}{$trailingDollar}#";
+        return "#^{$quotedWithWildcards}{$trailingDollar}#";
     }
 
     private function urlDecodeNonSlashes($str)
